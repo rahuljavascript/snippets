@@ -1,7 +1,11 @@
+"use client";
 import Link from "next/link";
 import * as actions from "@/actions";
+import { useActionState } from "react";
 
 export default function SnippetCreatePage() {
+  const [formState, action] = useActionState(actions.createSnippet, { message: "" });
+
   return (
     <div className="space-y-6 max-w-3xl mx-auto">
       <Link
@@ -21,7 +25,7 @@ export default function SnippetCreatePage() {
           </p>
         </div>
 
-        <form action={actions.createSnippet} className="space-y-6">
+        <form action={action} className="space-y-6">
           <div>
             <label
               htmlFor="title"
@@ -55,6 +59,23 @@ export default function SnippetCreatePage() {
               className="w-full px-3.5 py-2.5 text-slate-900 bg-slate-950 text-slate-100 border border-slate-800 rounded-lg shadow-xs font-mono text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 transition leading-relaxed resize-y"
             />
           </div>
+          {formState.message && (
+            <div className="flex items-center gap-2.5 p-3.5 rounded-lg bg-red-50 border border-red-200 text-red-700 text-sm shadow-xs animate-in fade-in duration-150">
+              <svg
+                className="w-5 h-5 text-red-500 shrink-0"
+                viewBox="0 0 20 20"
+                fill="currentColor"
+                aria-hidden="true"
+              >
+                <path
+                  fillRule="evenodd"
+                  d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-8-5a.75.75 0 01.75.75v4.5a.75.75 0 01-1.5 0v-4.5A.75.75 0 0110 5zm0 10a1 1 0 100-2 1 1 0 000 2z"
+                  clipRule="evenodd"
+                />
+              </svg>
+              <span className="font-medium">{formState.message}</span>
+            </div>
+          )}
 
           <div className="flex items-center justify-end gap-3 pt-4 border-t border-slate-100">
             <Link
