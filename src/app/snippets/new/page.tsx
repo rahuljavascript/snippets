@@ -1,24 +1,7 @@
 import Link from "next/link";
-import { redirect } from "next/navigation";
-import { db } from "@/db";
+import * as actions from "@/actions";
 
 export default function SnippetCreatePage() {
-  async function createSnippet(formData: FormData) {
-    "use server";
-    const title = formData.get("title") as string;
-    const code = formData.get("code") as string;
-
-    const snippet = await db.snippet.create({
-      data: {
-        title,
-        code,
-      },
-    });
-
-    console.log("Created snippet", snippet);
-    redirect("/");
-  }
-
   return (
     <div className="space-y-6 max-w-3xl mx-auto">
       <Link
@@ -38,7 +21,7 @@ export default function SnippetCreatePage() {
           </p>
         </div>
 
-        <form action={createSnippet} className="space-y-6">
+        <form action={actions.createSnippet} className="space-y-6">
           <div>
             <label
               htmlFor="title"

@@ -1,6 +1,6 @@
 import Link from "next/link";
-import { db } from "@/db";
-import { notFound, redirect } from "next/navigation";
+import { getSnippet } from "@/db/queries";
+import * as actions from "@/actions";
 
 interface SnippetShowPageProps {
   params: Promise<{
@@ -13,25 +13,9 @@ export default async function SnippetShowPage(props: SnippetShowPageProps) {
   const snippetId = parseInt(id);
   await new Promise((resolve) => setTimeout(resolve, 1000));
 
-  const snippet = await db.snippet.findFirst({
-    where: {
-      id: snippetId,
-    },
-  });
+  const snippet = await getSnippet(snippetId);
 
-  if (!snippet) {
-    return notFound();
-  }
-
-  async function deleteSnippet() {
-    "use server";
-
-    await db.snippet.delete({
-      where: { id: snippetId },
-    });
-
-    redirect("/");
-  }
+  const deleteSnippetAction = actions.deleteSnippet.bind(null, snippet.id);
 
   return (
     <div className="space-y-6">
@@ -58,7 +42,7 @@ export default async function SnippetShowPage(props: SnippetShowPageProps) {
           >
             <span>✏️</span> Edit
           </Link>
-          <form action={deleteSnippet}>
+          <form action={deleteSnippetAction}>
             <button
               type="submit"
               className="inline-flex items-center gap-1.5 px-3.5 py-2 text-sm font-medium text-red-600 bg-white border border-red-200 rounded-lg shadow-xs hover:bg-red-50 hover:border-red-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 transition-colors cursor-pointer"
