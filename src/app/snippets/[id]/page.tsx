@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { getSnippet } from "@/db/queries";
 import * as actions from "@/actions";
+import { db } from "@/db";
 
 interface SnippetShowPageProps {
   params: Promise<{
@@ -69,6 +70,14 @@ export default async function SnippetShowPage(props: SnippetShowPageProps) {
       </div>
     </div>
   );
-}
+};
+
+export async function generateStaticParams() {
+  const snippets = await db.snippet.findMany();
+
+  return snippets.map((snippet) => ({
+    id: snippet.id.toString(),
+  }));
+};
 
 
